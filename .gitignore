@@ -1,0 +1,25 @@
+# 依赖
+node_modules/
+
+# Python 本地包
+pypkgs/
+__pycache__/
+*.pyc
+
+# 转换输出（由 converter 生成）
+converted/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Scream Code 内部文件
+.agents/
+
+# 日志
+*.log
