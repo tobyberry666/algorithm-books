@@ -5,36 +5,31 @@
       "title": "Poster",
       "author": "",
       "file": "poster.pdf",
-      "url": "https://github.com/tobyberry666/algorithm-books/releases/download/v0.1.0/poster.pdf",
       "converted": "converted/poster/index.html"
     },
     {
       "id": "dahua-datastructure",
       "title": "大话数据结构",
       "author": "程杰",
-      "file": "大话数据结构 (程杰) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
-      "url": "https://github.com/tobyberry666/algorithm-books/releases/download/v0.1.0/z-library.sk.1lib.sk.z-lib.sk.pdf"
+      "file": "大话数据结构 (程杰) (z-library.sk, 1lib.sk, z-lib.sk).pdf"
     },
     {
       "id": "shen-ru-qian-chu",
       "title": "深入浅出程序设计竞赛（基础篇）",
       "author": "汪楚奇",
-      "file": "深入浅出程序设计竞赛（基础篇） (汪楚奇) (Z-Library).pdf",
-      "url": "https://github.com/tobyberry666/algorithm-books/releases/download/v0.1.0/Z-Library.pdf"
+      "file": "深入浅出程序设计竞赛（基础篇） (汪楚奇) (Z-Library).pdf"
     },
     {
       "id": "algorithm-contest-1",
       "title": "算法竞赛（上册）",
       "author": "罗勇军，郭卫斌",
-      "file": "算法竞赛（上册） (罗勇军，郭卫斌) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
-      "url": "https://github.com/tobyberry666/algorithm-books/releases/download/v0.1.0/algorithm-contest-1.pdf"
+      "file": "算法竞赛（上册） (罗勇军，郭卫斌) (z-library.sk, 1lib.sk, z-lib.sk).pdf"
     },
     {
       "id": "algorithm-contest-2",
       "title": "算法竞赛（下册）",
       "author": "罗勇军，郭卫斌",
       "file": "算法竞赛（下册） (罗勇军，郭卫斌) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
-      "url": "https://github.com/tobyberry666/algorithm-books/releases/download/v0.1.0/algorithm-contest-2.pdf",
       "converted": "converted/algorithm-contest-2/index.html"
     }
   ]

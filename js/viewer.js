@@ -352,7 +352,7 @@
      getMode: () => mode,
    });
  
-   await loadPDF(book.url || book.file);
+   await loadPDF(book.file);
  }
  
  init();

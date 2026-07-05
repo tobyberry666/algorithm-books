@@ -10,7 +10,7 @@
    if (cached) return cached;
  
    try {
-     const loadingTask = pdfjsLib.getDocument(book.url || book.file);
+     const loadingTask = pdfjsLib.getDocument(book.file);
      const pdf = await loadingTask.promise;
      const page = await pdf.getPage(1);
      const viewport = page.getViewport({ scale: 0.5 });
