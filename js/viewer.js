@@ -106,20 +106,34 @@
    wrapper.appendChild(canvas);
    wrapper.appendChild(textLayerDiv);
  
-   await page.render({ canvasContext: ctx, viewport }).promise;
- 
-//    const textContent = await page.getTextContent();
-//    pdfjsLib.renderTextLayer({
-//      textContentSource: textContent,
-//      container: textLayerDiv,
-//      viewport,
-//      textDivs: [],
-//    });
- 
-   renderedPages.set(pageNum, wrapper);
-   // Code highlighting
-   detectCodeBlocks(textLayerDiv);
-   return wrapper;
+  await page.render({ canvasContext: ctx, viewport }).promise;
+
+  await renderTextLayer(page, textLayerDiv, viewport);
+
+  renderedPages.set(pageNum, wrapper);
+  // Code highlighting
+  detectCodeBlocks(textLayerDiv);
+  return wrapper;
+}
+
+// 渲染可选中的文字层（仅文字型 PDF 有内容；扫描版无文字则自动为空，不产生重影）
+async function renderTextLayer(page, textLayerDiv, viewport) {
+  try {
+    const textContent = await page.getTextContent();
+    if (!textContent || !textContent.items || textContent.items.length === 0) return;
+    const task = pdfjsLib.renderTextLayer({
+      textContentSource: textContent,
+      container: textLayerDiv,
+      viewport,
+      textDivs: [],
+    });
+    if (task && typeof task.render === 'function') {
+      await task.render();
+    }
+  } catch (e) {
+    // 文字层渲染失败不应影响页面显示
+    console.warn('textLayer render failed:', e);
+  }
  }
  
  function setupLazyRender() {
@@ -208,14 +222,8 @@
    container.appendChild(wrapper);
  
    await page.render({ canvasContext: ctx, viewport }).promise;
-//    const textContent = await page.getTextContent();
-//    pdfjsLib.renderTextLayer({
-//      textContentSource: textContent,
-//      container: textLayerDiv,
-//      viewport,
-//      textDivs: [],
-//    });
- 
+  await renderTextLayer(page, textLayerDiv, viewport);
+
    renderedPages.set(currentPage, wrapper);
    detectCodeBlocks(textLayerDiv);
    updatePageIndicator();

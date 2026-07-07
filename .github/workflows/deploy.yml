@@ -23,4 +23,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .
           force_orphan: true
-          exclude_assets: '.gitignore,.gitattributes,.github,node_modules,pypkgs,converted,.agents,wiki-pages'
+          exclude_assets: '.gitignore,.gitattributes,.github,node_modules,pypkgs,.agents,wiki-pages'

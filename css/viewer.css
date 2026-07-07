@@ -90,7 +90,8 @@
    line-height: 1.0;
  }
  .pdf-page .textLayer span {
-   color: #333;
+   /* 透明文字层：canvas 负责显示字形，文字层只用于选中/复制，避免与 canvas 重影 */
+   color: transparent;
    position: absolute;
    white-space: pre;
    cursor: text;

@@ -1,0 +1,5 @@
+# PDF -> 可复制 HTML 转换器依赖
+# 安装：pip install -r requirements.txt
+pymupdf>=1.24        # 必装：PDF 解析与渲染（提供 fitz）
+pillow>=10.0         # OCR 时需要：把页面像素喂给 tesseract
+pytesseract>=0.3.10  # 可选：扫描版 OCR 文字层（还需系统安装 tesseract + 中文包）
