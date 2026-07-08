@@ -1,143 +1,104 @@
-[English](./README.en.md) · [日本語](./README.ja.md)
+# 文字型 PDF → 可批注 HTML 网页
 
-# 📚 算法书 — 把 PDF 教材变成「可滚动、可复制」的自包含网页
+> 只要你的 PDF 是**文字型**（内嵌可选中文本，而非纯扫描图片），就能把它变成
+> **一个可选中、可高亮、可写批注的网页**——前后端全本地、零第三方服务、零 CDN。
 
-> 一行命令，把任意 PDF（文字版 / 扫描版）转成不依赖任何外部资源的 HTML 阅读页；
-> 同时内置一个纯静态书架 + PDF.js 阅读器，可就地翻看原版 PDF。
+把教材 / 论文 / 文档丢进去，网页里**像在 PDF 里一样选中文字**，一键高亮、加下划线、
+写笔记；刷新不丢，还能**导出一份自包含 HTML**（单文件，发给别人也能继续批注）。
+
 ---
 
-## ✨ 两种阅读方式
+## ✨ 它解决什么
 
-| 方式 | 命令 / 入口 | 适合 | 复制文字 |
-|------|------------|------|----------|
-| **A. 转换后的 HTML** | `python converter/convert.py 你的书.pdf` | 长期阅读、想复制片段 | ✅ 文字版天然可复制；扫描版装了 tesseract 后也可复制 |
-| **B. PDF.js 原版阅读器** | 打开 `index.html` → 点「PDF 版」 | 想看原版排版、公式 | ✅ 文字层透明化，可选中 |
-| **图书画廊** | 打开 `index.html` | 书架挑书 | — |
+| 传统做法 | 本工具 |
+|----------|--------|
+| 截图 OCR、满屏 PNG，文件数爆炸 | 只抽**文字 + 坐标**，一本书 ≈ 2 个 JSON，磁盘几乎零负担 |
+| 批注锁死在 PDF 阅读器里 | 批注存网页，可导出、可分享、可继续编辑 |
+| 依赖网盘 / 在线 SaaS，隐私外泄 | 全程本地，PDF 抽取完即删源文件 |
+| 文字不可选中、复制麻烦 | 文字原生可选中、可复制 |
 
-> 两种方式都纯静态、零后端、零 CDN。
+> 💡 **设计哲学**：不往你电脑塞垃圾、不让文件数疯涨。PDF 源文件上传后立即抽取并丢弃，
+> 磁盘上只留极小的结构化数据。
 
 ---
 
 ## 🚀 快速开始
 
-### 1. 装依赖
-
 ```bash
+# 1) 装依赖（只需一个）
 pip install -r requirements.txt
+
+# 2) 启动（纯标准库，无需 Flask / 数据库）
+python app.py
+# 默认 http://127.0.0.1:8000
+# 想让同局域网访问：python app.py --host 0.0.0.0 --port 9000
+
+# 3) 打开浏览器，上传一个文字型 PDF，开始批注
 ```
 
-- `pymupdf`：**必装**，PDF 解析与渲染（提供 `fitz`）。
-- `pillow` + `pytesseract`：**OCR 用**，扫描版要可复制文字才需要。
-- 仓库自带 `pypkgs/fitz` 作为兜底；装了上面的就走 pip 版，二选一即可。
-
-### 2. 转换任意一本 PDF → 自包含 HTML
-
-```bash
-# 最常用：转换单个 PDF（自动判断「文字版 / 扫描版」）
-python converter/convert.py 我的书.pdf
-
-# 指定输出目录与书名
-python converter/convert.py 我的书.pdf -o ./out/我的书 --title "我的书"
-
-# 扫描版想可复制？先装好 tesseract（见下方「OCR 说明」），再开 OCR
-python converter/convert.py 扫描书.pdf --ocr --lang chi_sim+eng
-```
-
-转换完会生成：
-
-```
-converted/我的书/
-├── index.html        # 自包含：CSS/JS 内联，代码高亮所需的 hljs 也复制进来了
-├── images/           # 每页图片（扫描版）或配图（文字版）
-└── assets/           # highlight.min.*（仅文字版有）
-```
-
-用浏览器打开 `converted/我的书/index.html` 即可阅读（建议走 http 服务器，
-`file://` 下个别浏览器会限制某些资源加载）。
-
-### 3. 用书架画廊（PDF.js 阅读器）
-
-```bash
-python -m http.server 3000
-# 浏览器打开 http://localhost:3000/index.html
-```
-
-> ⚠️ 必须用 HTTP 服务器启动，`file://` 协议会被 CORS 阻止。
+需要 Python 3.8+。除了 `pymupdf` 没有别的运行依赖。
 
 ---
 
-## 🔤 OCR 说明（扫描版可复制文字的关键）
+## 🖱 怎么用
 
-扫描版 PDF 没有内嵌文字，默认转出来是「每页一张高清图」，**文字不可选中复制**。
-想要可复制，需要 OCR：
+1. **上传**：首页拖入 / 选择任意文字型 PDF。
+2. **阅读 + 批注**：
+   - 直接**用鼠标选中一段文字**，浮出工具条 → 选「高亮 / 下划线 / 批注」。
+   - 「批注」会弹出输入框，写下你的笔记；批注会落到右侧边栏，可随时编辑、删除。
+   - 顶部滑块缩放页面（0.5×–3×），长文档自动懒渲染，不卡。
+3. **标注持久化**：在线版的批注存于服务端 `data/`，刷新、重开浏览器都不丢。
+4. **导出**：点「导出 HTML」→ 得到**单个 `.html` 文件**，自带全部文字、版式与批注；
+   双击即用，**离线可批注**，可直接发给同学 / 同事继续标注。
 
-1. **系统装 tesseract 二进制** 并加入 `PATH`：
-   - Windows：装 [UB-Mannheim/tesseract](https://github.com/UB-Mannheim/tesseract/wiki) 安装包，勾选中文包 `chi_sim`。
-   - macOS：`brew install tesseract tesseract-lang`
-   - Linux：`sudo apt install tesseract-ocr tesseract-ocr-chi-sim`
-2. 装 Python 依赖：`pip install pytesseract pillow`（已在 `requirements.txt`）。
-3. 重新转换：`python converter/convert.py 扫描书.pdf --ocr`。
-
-转换后的扫描页会叠一层**与图片对齐、透明但可选中**的 OCR 文字层（`.ocr-layer`），
-于是扫描书也能像文字书一样 Ctrl+C 复制。
-
-> 本机没装 tesseract？没关系，转换器会**优雅降级为纯图片**，并在页面顶部提示如何开启 OCR。
+> ⚠️ 仅支持**文字型** PDF。纯扫描版（无内嵌文字）会提示「无可抽取文本」，
+> 这类请用 OCR 工具先转成文字 PDF 再上传。
 
 ---
 
 ## 📂 项目结构
 
 ```
-算法书/
-├── index.html              # [画廊] 书架入口
-├── viewer.html             # [Phase 1] PDF.js 阅读器
-├── books.json              # 书籍配置（书架 + 转换器批量用）
-├── converter/
-│   └── convert.py          # [Phase 2] PDF → 自包含 HTML 转换器（纯 CLI）
-├── requirements.txt        # pip 依赖清单
-├── lib/                    # 书架/阅读器用的 pdfjs + highlight.js（转换器不依赖它）
-├── css/  js/               # 书架与阅读器样式/逻辑
-├── pypkgs/                 # PyMuPDF 兜底（gitignore，建议用 pip 装）
-└── converted/              # 转换输出（gitignore；只部署 poster 作为最小 demo）
-    └── poster/             # 文字版示范（已部署到 GitHub Pages）
+.
+├── app.py            # 后端：纯标准库 HTTP 服务（上传 / 读取 / 批注 / 导出）
+├── pdftext.py        # PDF 文本+版式抽取（PyMuPDF），输出紧凑 JSON
+├── static/
+│   ├── index.html    # 上传页 + 阅读批注页（双视图，同一套 JS）
+│   ├── style.css     # 样式
+│   └── app.js        # 前端逻辑：渲染 / 选区→批注映射 / 侧栏 / 导出
+├── requirements.txt  # 仅 pymupdf
+├── poster.pdf        # 一张小样张（演示用，已跟踪）
+└── data/             # 运行时生成：各文档的抽取结果 + 批注（gitignore，不进仓库）
 ```
 
 ---
 
-## 📖 已收录书籍
+## 🔌 接口（HTTP API）
 
-| 书名 | 类型 | PDF 版 | HTML 版 |
-|------|------|--------|---------|
-| Poster | 文字型（1 页） | ✅ | ✅ 已部署（最小 demo） |
-| 大话数据结构 | 扫描版 | ✅ | 本地转换后可用 |
-| 深入浅出程序设计竞赛（基础篇） | 扫描版 | ✅ | 本地转换后可用 |
-| 算法竞赛（上册） | 扫描版 | ✅ | 本地转换后可用 |
-| 算法竞赛（下册） | 扫描版 | ✅ | 本地转换后可用 |
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET  | `/api/info` | 服务信息 |
+| GET  | `/` 或 `/index.html` | 前端页面 |
+| POST | `/api/upload` | 原始 PDF 字节 + 头 `X-Filename`，抽取后返回 `{id, title, page_count}` |
+| GET  | `/api/doc/<id>` | 文档抽取结果（文字 span / 图片 / 元信息） |
+| GET  | `/api/docs` | 已上传文档列表 |
+| GET/POST | `/api/annotations/<id>` | 读取 / 覆盖保存批注（JSON 数组） |
+| GET  | `/api/export/<id>` | 导出**自包含可批注 HTML**（单文件） |
+| DELETE | `/api/doc/<id>` | 删除文档及其批注 |
 
-> `converted/` 被 gitignore：**clone 后默认只有 poster demo 在线可见**，其余书
-> 请本地跑 `python converter/convert.py --batch` 一键生成（保留书架画廊）。
-
----
-
-## 🛠 技术栈
-
-- **PDF 渲染**：PDF.js 3.11（零 CDN，本地内置）
-- **代码高亮**：highlight.js 11.9
-- **PDF 转换**：PyMuPDF 1.28（转换器核心）
-- **纯静态**：无后端、无框架、无构建工具
+> 导出的独立 HTML 用 `localStorage` 存批注，无需后端即可使用。
 
 ---
 
-## 📋 路线图
+## 🧱 技术栈
 
-- [x] **Phase 1**：静态书架 + PDF.js 阅读器（滚动/翻页/目录/代码高亮）
-- [x] **Phase 2**：CLI 转换器产品化（可移植、自包含、OCR 可选）
-- [ ] **Phase 3**：在线服务（Web 上传 → 转换 → 在线阅读 / 下载 zip）— 见 `server/`
-
-详见 [PROGRESS.md](./PROGRESS.md) 与 [handoff.md](./handoff.md)。
+- **后端**：Python 标准库 `http.server`（线程安全），无框架、无数据库。
+- **抽取**：PyMuPDF 1.24+（`fitz`），逐 span 抽取文字、字号、字重、颜色、坐标。
+- **前端**：原生 HTML / CSS / JS，无构建步骤、无 npm 依赖。
+- **存储**：每个文档一个目录 `data/<id>/`，含 `doc.json` 与 `annotations.json`。
 
 ---
 
 ## 📄 许可
 
-MIT License
+MIT License。

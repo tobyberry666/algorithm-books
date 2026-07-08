@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PDF 批注工坊 · 文字型 PDF 转可批注网页</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- ============ 首页：上传 / 我的文档 ============ -->
+<div id="home" class="view">
+  <header class="hero">
+    <h1>📝 PDF 批注工坊</h1>
+    <p class="sub">把任意<strong>文字型 PDF</strong> 变成可在浏览器里阅读、选中、批注的网页。
+       文字被原样提取（不栅格化成图片），所以清晰、体积小、可复制。</p>
+  </header>
+
+  <div id="drop" class="drop">
+    <div class="drop-inner">
+      <div class="drop-icon">📄➜📃</div>
+      <p>把 PDF 拖到这里，或 <label class="link">点击选择文件<input id="file" type="file" accept="application/pdf" hidden></label></p>
+      <p class="muted">仅支持内嵌文字的 PDF（论文 / 教材 / 文档）。纯扫描件请先 OCR 或换文字版。</p>
+    </div>
+  </div>
+
+  <section class="mydocs">
+    <h2>我的文档</h2>
+    <div id="docs" class="docs-grid"></div>
+    <p id="docs-empty" class="muted hidden">还没有文档，先上传一个吧。</p>
+  </section>
+</div>
+
+<!-- ============ 阅读 / 批注视图 ============ -->
+<div id="viewer" class="view hidden">
+  <div id="toolbar">
+    <button id="btn-back" class="tb-btn" title="返回首页">←</button>
+    <span class="tb-title" id="doc-title">文档</span>
+    <span class="spacer"></span>
+    <label class="tb-zoom">缩放
+      <input id="zoom" type="range" min="0.5" max="3" step="0.1" value="1.2">
+      <span id="zoom-val">1.2x</span>
+    </label>
+    <button id="btn-export" class="tb-btn primary">导出 HTML</button>
+  </div>
+  <div id="main">
+    <div id="pages"></div>
+    <aside id="sidebar">
+      <div class="sb-head">我的批注 <span id="ann-count">0</span></div>
+      <div id="ann-list"></div>
+      <p class="muted sb-tip">选中正文文字 → 点「高亮 / 下划线 / 批注」即可标注；点右侧卡片可跳转。</p>
+    </aside>
+  </div>
+</div>
+
+<!-- 选区浮动工具条 -->
+<div id="sel-bar" class="sel-bar hidden">
+  <button data-act="highlight">高亮</button>
+  <button data-act="underline">下划线</button>
+  <button data-act="note">批注</button>
+  <button data-act="cancel">取消</button>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
